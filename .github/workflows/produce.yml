@@ -18,19 +18,13 @@ jobs:
 
       - name: Create video
         run: |
-          mkdir -p output
-          ffmpeg -y \
-            -f lavfi \
-            -i "color=c=0x83D9FF:s=640x360:r=24:d=15" \
-            -vf "drawbox=x='(W-90)/2+100*sin(t*2)':y='(H-90)/2+45*cos(t*2)':w=90:h=90:color=yellow:t=fill,drawtext=text='KIDS STUDIO':fontsize=36:fontcolor=white:x=(w-text_w)/2:y=40" \
-            -c:v mpeg4 \
-            -q:v 5 \
-            -pix_fmt yuv420p \
-            -t 15 \
-            output/kids-video.mp4
-
-      - name: Save video
-        uses: actions/upload-artifact@v4
-        with:
-          name: kids-studio-video
-          path: output/kids-video.mp4
+        
+mkdir -p output
+ffmpeg -y \
+  -f lavfi \
+  -i "color=c=0x83D9FF:s=640x360:r=24:d=15" \
+  -c:v libx264 \
+  -threads 1 \
+  -pix_fmt yuv420p \
+  -t 15 \
+  output/kids-video.mp4
