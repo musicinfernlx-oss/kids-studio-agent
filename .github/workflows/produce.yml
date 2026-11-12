@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install video tools
+      - name: Install FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
@@ -23,7 +23,8 @@ jobs:
             -f lavfi \
             -i "color=c=0x83D9FF:s=640x360:r=24:d=15" \
             -vf "drawbox=x='(W-90)/2+100*sin(t*2)':y='(H-90)/2+45*cos(t*2)':w=90:h=90:color=yellow:t=fill,drawtext=text='KIDS STUDIO':fontsize=36:fontcolor=white:x=(w-text_w)/2:y=40" \
-            -c:v libx264 \
+            -c:v mpeg4 \
+            -q:v 5 \
             -pix_fmt yuv420p \
             -t 15 \
             output/kids-video.mp4
