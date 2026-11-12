@@ -1,0 +1,28 @@
+
+name: Kids Studio Agent
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * 1'
+
+jobs:
+  create-episode:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create episode
+        run: |
+          mkdir -p output
+          echo "KIDS STUDIO AI" > output/episode.txt
+          echo "Jakso: Taikametsan seikkailu" >> output/episode.txt
+          echo "1. Pikku pupu heraa." >> output/episode.txt
+          echo "2. Pupu loytaa taikametsan." >> output/episode.txt
+          echo "3. Pupu tapaa uuden ystavan." >> output/episode.txt
+          echo "4. Ystavykset ratkaisevat arvoituksen." >> output/episode.txt
+          echo "5. Kaikki palaavat kotiin." >> output/episode.txt
+
+      - name: Save episode
+        uses: actions/upload-artifact@v4
+        with:
+          name: kids-studio-episode
+          path: output/
