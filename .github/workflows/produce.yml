@@ -7,22 +7,29 @@ on:
     - cron: '0 8 * * 1'
 
 jobs:
-  create-episode:
+  create-video:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Create episode
+      - name: Install video tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Create video
         run: |
           mkdir -p output
-          echo "KIDS STUDIO AI" > output/episode.txt
-          echo "Jakso: Taikametsan seikkailu" >> output/episode.txt
-          echo "1. Pikku pupu heraa." >> output/episode.txt
-          echo "2. Pupu loytaa taikametsan." >> output/episode.txt
-          echo "3. Pupu tapaa uuden ystavan." >> output/episode.txt
-          echo "4. Ystavykset ratkaisevat arvoituksen." >> output/episode.txt
-          echo "5. Kaikki palaavat kotiin." >> output/episode.txt
+          ffmpeg -y \
+            -f lavfi \
+            -i "color=c=0x83D9FF:s=640x360:r=24:d=15" \
+            -vf "drawbox=x='(W-90)/2+100*sin(t*2)':y='(H-90)/2+45*cos(t*2)':w=90:h=90:color=yellow:t=fill,drawtext=text='KIDS STUDIO':fontsize=36:fontcolor=white:x=(w-text_w)/2:y=40" \
+            -c:v libx264 \
+            -pix_fmt yuv420p \
+            -t 15 \
+            output/kids-video.mp4
 
-      - name: Save episode
+      - name: Save video
         uses: actions/upload-artifact@v4
         with:
-          name: kids-studio-episode
-          path: output/
+          name: kids-studio-video
+          path: output/kids-video.mp4
