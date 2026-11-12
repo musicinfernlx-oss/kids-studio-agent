@@ -18,13 +18,19 @@ jobs:
 
       - name: Create video
         run: |
-        
-mkdir -p output
-ffmpeg -y \
-  -f lavfi \
-  -i "color=c=0x83D9FF:s=640x360:r=24:d=15" \
-  -c:v libx264 \
-  -threads 1 \
-  -pix_fmt yuv420p \
-  -t 15 \
-  output/kids-video.mp4
+          mkdir -p output
+          ffmpeg -y \
+            -f lavfi \
+            -i "color=c=0x83D9FF:s=640x360:r=24:d=15" \
+            -c:v libx264 \
+            -threads 1 \
+            -pix_fmt yuv420p \
+            -t 15 \
+            output/kids-video.mp4
+
+      - name: Save video
+        uses: actions/upload-artifact@v4
+        with:
+          name: kids-video
+          path: output/kids-video.mp4
+          if-no-files-found: error
