@@ -16,21 +16,28 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      - name: Create video
+      - name: Create animated video
         run: |
           mkdir -p output
           ffmpeg -y \
             -f lavfi \
-            -i "color=c=0x83D9FF:s=640x360:r=24:d=15" \
+            -i "color=c=0x87CEEB:s=640x360:r=24:d=15" \
+            -f lavfi \
+            -i "sine=frequency=440:sample_rate=44100:duration=15" \
+            -filter_complex "[0:v]drawbox=x=0:y=260:w=640:h=100:color=0x6BCB77:t=fill,drawbox=x='100+60*sin(t*2)':y='175-35*abs(sin(t*3))':w=75:h=75:color=white:t=fill,drawbox=x='115+60*sin(t*2)':y='135-35*abs(sin(t*3))':w=15:h=55:color=white:t=fill,drawbox=x='145+60*sin(t*2)':y='135-35*abs(sin(t*3))':w=15:h=55:color=white:t=fill,drawbox=x=490:y=45:w=65:h=65:color=yellow:t=fill,drawtext=text='BUNNY ADVENTURE':fontsize=28:fontcolor=white:x=(w-text_w)/2:y=20[v]" \
+            -map "[v]" \
+            -map 1:a \
             -c:v libx264 \
             -threads 1 \
             -pix_fmt yuv420p \
+            -c:a aac \
+            -b:a 128k \
             -t 15 \
-            output/kids-video.mp4
+            output/kids-animation.mp4
 
-      - name: Save video
+      - name: Save animation
         uses: actions/upload-artifact@v4
         with:
-          name: kids-video
-          path: output/kids-video.mp4
+          name: kids-animation
+          path: output/kids-animation.mp4
           if-no-files-found: error
